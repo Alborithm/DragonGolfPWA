@@ -1,0 +1,66 @@
+@page "/persondata"
+@using TG.Blazor.IndexedDB
+@inject IndexedDBManager DbManager
+
+<h1>Person Data</h1>
+
+<p>This component demonstrates fetching data from IndexedDB.</p>
+
+@if (persons == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in persons)
+            {
+                <tr>
+                    <td>@forecast.Id</td>
+                    <td>@forecast.FirstName</td>
+                    <td>@forecast.LastName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Person> persons;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //persons = await Http.GetFromJsonAsync<Persons[]>("sample-data/weather.json");
+        Person NewPerson = new Person(){
+            FirstName = "Gerardo",
+            LastName = "Albor"
+        };
+        
+        var newRecord = new StoreRecord<Person>
+        {
+            Storename ="Employees",
+            Data = NewPerson
+        };
+
+        await DbManager.AddRecord(newRecord);
+
+        await DbManager.DeleteRecord<long>("Employees", 1);
+
+        persons = await DbManager.GetRecords<Person>("Employees");
+    }
+
+    public class Person
+    {
+        public long? Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+}
