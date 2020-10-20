@@ -22,7 +22,10 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/TG.Blazor.IndexedDB/indexedDb.Blazor.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.published.js');</script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register('/DragonGolfPWA/service-worker.js', {scope: '/DragonGolfPWA/'});
+    }
+    </script>
 </body>
 
 </html>
